@@ -90,6 +90,8 @@ with col1:
                 .replace("--", 0)
                 .astype("int32", copy=False, errors="raise")
             )
+        data_fichier["CLE"] = data_fichier["CLE"].apply("{:0>2}".format)
+        data_fichier["SIRET"] = data_fichier["SIRET"].apply("{:0>14}".format)
 
         data_fichier["QUOTITE"] = data_fichier["QUOTITE"].astype("float", copy=False)
 
@@ -135,7 +137,7 @@ with col1:
             "SIRET": st.column_config.NumberColumn(
                 required=True,
                 help="SIRET",
-                format="%014d",
+                format="%d",
                 min_value=0,
                 max_value=99999999999999,
             ),
