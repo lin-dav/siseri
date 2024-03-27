@@ -86,7 +86,9 @@ with col1:
 
         for colonne in ["CLE", "SIRET", "codeDomaineActivite", "codeSecteurActivite"]:
             data_fichier[colonne] = (
-                data_fichier[colonne].replace("--", 0).astype("Int64", copy=False)
+                data_fichier[colonne]
+                .replace("--", 0)
+                .astype("Int64", copy=False, errors="ignore")
             )
 
         data_fichier["QUOTITE"] = data_fichier["QUOTITE"].astype("float", copy=False)
