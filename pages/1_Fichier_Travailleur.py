@@ -88,7 +88,7 @@ with col1:
             data_fichier[colonne] = (
                 data_fichier[colonne]
                 .replace("--", 0)
-                .astype("Int64", copy=False, errors="ignore")
+                .astype("int32", copy=False, errors="raise")
             )
 
         data_fichier["QUOTITE"] = data_fichier["QUOTITE"].astype("float", copy=False)
