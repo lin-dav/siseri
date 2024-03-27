@@ -73,6 +73,7 @@ with col1:
 
     elif uploaded_file is not None:
         data_fichier = pd.read_csv(uploaded_file, sep=";")
+        # st.dataframe(data_fichier, use_container_width=True)
 
         data_fichier["DATENAISSANCE"] = pd.to_datetime(
             arg=data_fichier["DATENAISSANCE"], format="%d/%m/%Y", dayfirst=True
@@ -88,14 +89,12 @@ with col1:
             data_fichier[colonne] = (
                 data_fichier[colonne]
                 .replace("--", 0)
-                .astype("int32", copy=False, errors="raise")
+                .astype("int64", copy=False, errors="ignore")
             )
         data_fichier["CLE"] = data_fichier["CLE"].apply("{:0>2}".format)
         data_fichier["SIRET"] = data_fichier["SIRET"].apply("{:0>14}".format)
 
         data_fichier["QUOTITE"] = data_fichier["QUOTITE"].astype("float", copy=False)
-
-        # st.dataframe(data_fichier, use_container_width=True)
 
     data_tableau = st.data_editor(
         data_fichier,
