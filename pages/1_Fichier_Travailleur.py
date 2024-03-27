@@ -117,13 +117,13 @@ with col1:
                 required=True,
                 help="nom de naissance, majuscule, sans accent (25 caractères maxi)",
                 max_chars=25,
-                validate="[A-Z- ]+",
+                validate="[a-zA-Z- ]+",
             ),
             "PRENOM": st.column_config.TextColumn(
                 required=True,
                 help="Prénom, majuscule, sans accent (25 caractères maxi)",
                 max_chars=25,
-                validate="[A-Z-]+",
+                validate="[a-zA-Z-]+",
             ),
             "DATENAISSANCE": st.column_config.DateColumn(
                 required=True,
@@ -219,18 +219,24 @@ with col1:
 
 with col2:
 
-    st.download_button(
-        label="Télécharger le tableau",
-        data=data_tableau.to_csv(
-            sep=";",
-            index=False,
-            date_format="%d/%m/%Y",
-            encoding="utf-8",
-        ),
-        file_name=f"import-trav_{dt.datetime.now()}.csv",
-        mime="text/csv",
-        type="primary",
-    )
+    if st.button("Mise en forme", type="primary"):
+        data_tableau["NOM"] = data_tableau["NOM"].str.upper()
+        data_tableau["PRENOM"] = data_tableau["PRENOM"].str.upper()
+        data_tableau["CLE"] = data_tableau["CLE"].apply("{:0>2}".format)
+        data_tableau["SIRET"] = data_tableau["SIRET"].apply("{:0>14}".format)
+
+        st.download_button(
+            label="Télécharger le tableau",
+            data=data_tableau.to_csv(
+                sep=";",
+                index=False,
+                date_format="%d/%m/%Y",
+                encoding="utf-8",
+            ),
+            file_name=f"import-trav_{dt.datetime.now()}.csv",
+            mime="text/csv",
+            type="primary",
+        )
 
     with st.container(border=True):
         st.write("# Aide")
