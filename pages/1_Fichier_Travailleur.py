@@ -218,25 +218,29 @@ with col1:
 
 
 with col2:
+    col21, col22 = st.columns(2)
 
-    if st.button("Mise en forme", type="primary"):
-        data_tableau["NOM"] = data_tableau["NOM"].str.upper()
-        data_tableau["PRENOM"] = data_tableau["PRENOM"].str.upper()
-        data_tableau["CLE"] = data_tableau["CLE"].apply("{:0>2}".format)
-        data_tableau["SIRET"] = data_tableau["SIRET"].apply("{:0>14}".format)
+    with col21:
+        if st.button("Mise en forme", type="primary"):
+            data_tableau["NOM"] = data_tableau["NOM"].str.upper()
+            data_tableau["PRENOM"] = data_tableau["PRENOM"].str.upper()
+            data_tableau["CLE"] = data_tableau["CLE"].apply("{:0>2}".format)
+            data_tableau["SIRET"] = data_tableau["SIRET"].apply("{:0>14}".format)
 
-        st.download_button(
-            label="Télécharger le tableau",
-            data=data_tableau.to_csv(
-                sep=";",
-                index=False,
-                date_format="%d/%m/%Y",
-                encoding="utf-8",
-            ),
-            file_name=f"import-trav_{dt.datetime.now()}.csv",
-            mime="text/csv",
-            type="primary",
-        )
+            with col22:
+                if st.download_button(
+                    label="Télécharger le tableau",
+                    data=data_tableau.to_csv(
+                        sep=";",
+                        index=False,
+                        date_format="%d/%m/%Y",
+                        encoding="utf-8",
+                    ),
+                    file_name=f"import-trav_{dt.datetime.now()}.csv",
+                    mime="text/csv",
+                    type="primary",
+                ):
+                    st.rerun()
 
     with st.container(border=True):
         st.write("# Aide")
