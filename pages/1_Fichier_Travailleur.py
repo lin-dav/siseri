@@ -4,7 +4,7 @@ import datetime as dt
 
 st.set_page_config(layout="wide")
 
-st.write("# Fichier CSV travailleurs")
+st.title("Fichier CSV travailleurs")
 
 
 d = {
