@@ -48,7 +48,7 @@ d = {
         "Quotité",
         "Date de début de contrat",
     ],
-    "Spécificités": [],
+    "Spécificités": ["Obligatoire.\nEn majuscule, sans accent."],
 }
 
 data_clean = pd.DataFrame(columns=d["Colonne"], index=range(1, 2))
@@ -212,7 +212,8 @@ with col1:
 
 
 with col2:
-    col21, col22 = st.columns(2)
+    col21, col22, col23 = st.columns(3)
+    container_aide = st.container(border=True)
 
     with col21:
         if st.button("Mise en forme", type="primary"):
@@ -236,15 +237,11 @@ with col2:
                 ):
                     st.rerun()
 
-    with st.container(border=True):
-        st.write("# Aide")
+        if col23.checkbox("Aide ?"):
+            container_aide.write("# Aide")
 
-        with st.expander("**Colonnes attendues**", expanded=True):
-            st.table(d)
+            with container_aide.expander("**Colonnes attendues**", expanded=True):
+                st.table(d)
 
-        with st.expander("**Domaine d'activité**"):
-            st.write("ok")
-
-        with st.expander("**Secteur d'activité**"):
-            st.link_button(url="listes", label="Listes")
-            st.link_button(url="Accueil", label="Accueil")
+            with container_aide.expander("**Domaines, Secteurs et Métiers**"):
+                st.link_button(url="Listes", label="Listes")
