@@ -52,12 +52,6 @@ d = {
 }
 
 data_clean = pd.DataFrame(columns=d["Colonne"], index=range(1, 2))
-# st.data_editor(
-#     data_clean,
-#     num_rows="dynamic",
-#     use_container_width=True,
-#     hide_index=True,
-# )
 
 col1, col2 = st.columns([0.7, 0.3], gap="small")
 
@@ -101,7 +95,7 @@ with col1:
         use_container_width=True,
         hide_index=True,
         num_rows="dynamic",
-        height=999,
+        height=min(300 + len(data_fichier) * 60, 999),
         width=999,
         column_config={
             "NIR": st.column_config.TextColumn(
@@ -245,8 +239,12 @@ with col2:
     with st.container(border=True):
         st.write("# Aide")
 
-        with st.expander("**Colonnes attendues**"):
+        with st.expander("**Colonnes attendues**", expanded=True):
             st.table(d)
 
         with st.expander("**Domaine d'activité**"):
             st.write("ok")
+
+        with st.expander("**Secteur d'activité**"):
+            st.link_button(url="listes", label="Listes")
+            st.link_button(url="Accueil", label="Accueil")
