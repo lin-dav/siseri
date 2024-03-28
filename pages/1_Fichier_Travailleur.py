@@ -31,9 +31,9 @@ d = {
     "Description": [
         "Numéro de sécurité sociale (13 chiffres)",
         "Clé (2 chiffres)",
-        "Nom en majuscule sans accent",
-        "Prénom en majuscule sans accent",
-        "Date de naissance JJ/MM/AAAA",
+        "Nom",
+        "Prénom",
+        "Date de naissance (JJ/MM/AAAA)",
         "Sexe (F ou M)",
         "SIRET de rattachement (14 chiffres)",
         "Groupe de travailleurs",
@@ -48,7 +48,17 @@ d = {
         "Quotité",
         "Date de début de contrat",
     ],
-    "Spécificités": ["Obligatoire.\nEn majuscule, sans accent."],
+    "Spécificités": [
+        "-Obligatoire. -Numéro de sécurité sociale. -13 caractères. - Le NIA pour les travailleurs étrangers est également accepté.",
+        "-Obligatoire. -2 chiffres.",
+        "-Obligatoire. -En majuscule, sans accent.",
+        "-Obligatoire. -En majuscule, sans accent.",
+        "-Obligatoire. ",
+        "-Obligatoire. ",
+        "-Obligatoire. -SIRET de l'établissement, connu dans SISERI",
+        "-Optionnel. -Groupe de travailleurs présent dans l'établissement. Si inconnu, Groupe par défaut.",
+        '-Obligatoire. -Catégorie du travailleur. Peut être vide si "AUTREEXPOSITION" est rempli.',
+    ],
 }
 
 data_clean = pd.DataFrame(columns=d["Colonne"], index=range(1, 2))
@@ -67,28 +77,54 @@ with col1:
 
     elif uploaded_file is not None:
         data_fichier = pd.read_csv(uploaded_file, sep=";")
-        # st.dataframe(data_fichier, use_container_width=True)
 
-        data_fichier["DATENAISSANCE"] = pd.to_datetime(
-            arg=data_fichier["DATENAISSANCE"], format="%d/%m/%Y", dayfirst=True
-        )
-        data_fichier["DATEDEBUT"] = pd.to_datetime(
-            arg=data_fichier["DATEDEBUT"], format="%d/%m/%Y", dayfirst=True
-        )
-
-        for colonne in ["NIR", "NOM", "PRENOM", "SEXE", "GROUPE", "CLASSEMENT"]:
-            data_fichier[colonne] = data_fichier[colonne].astype("string", copy=False)
-
-        for colonne in ["CLE", "SIRET", "codeDomaineActivite", "codeSecteurActivite"]:
-            data_fichier[colonne] = (
-                data_fichier[colonne]
-                .replace("--", 0)
-                .astype("int64", copy=False, errors="ignore")
+        if data_fichier.shape[1] != 18:
+            st.error(
+                "Le fichier importé ne contient pas les colonnes attendues. Veuillez vous référer à l'aide, à droite."
             )
-        data_fichier["CLE"] = data_fichier["CLE"].apply("{:0>2}".format)
-        data_fichier["SIRET"] = data_fichier["SIRET"].apply("{:0>14}".format)
+            st.write("Colonnes affichées : ")
+            st.write(data_fichier.columns.tolist())
+            data_fichier = data_clean.copy()
 
-        data_fichier["QUOTITE"] = data_fichier["QUOTITE"].astype("float", copy=False)
+        else:
+            # st.dataframe(data_fichier, use_container_width=True)
+            data_fichier = data_fichier.set_axis(
+                d["Colonne"], axis=1
+            )  # renommer les colonnes
+
+            data_fichier["DATENAISSANCE"] = pd.to_datetime(
+                arg=data_fichier["DATENAISSANCE"], format="%d/%m/%Y", dayfirst=True
+            )
+            data_fichier["DATEDEBUT"] = pd.to_datetime(
+                arg=data_fichier["DATEDEBUT"], format="%d/%m/%Y", dayfirst=True
+            )
+
+            for colonne in [
+                "NIR",
+                "NOM",
+                "PRENOM",
+                "SEXE",
+                "GROUPE",
+                "CLASSEMENT",
+            ]:
+                data_fichier[colonne] = data_fichier[colonne].astype(
+                    "string", copy=False
+                )
+
+            for colonne in [
+                "CLE",
+                "SIRET",
+                "codeDomaineActivite",
+                "codeSecteurActivite",
+                "QUOTITE",
+            ]:
+                data_fichier[colonne] = (
+                    data_fichier[colonne]
+                    .replace("--", 0)
+                    .astype("int64", copy=False, errors="ignore")
+                )
+            data_fichier["CLE"] = data_fichier["CLE"].apply("{:0>2}".format)
+            data_fichier["SIRET"] = data_fichier["SIRET"].apply("{:0>14}".format)
 
     data_tableau = st.data_editor(
         data_fichier,
@@ -135,7 +171,7 @@ with col1:
                 max_value=99999999999999,
             ),
             "GROUPE": st.column_config.TextColumn(
-                required=True,
+                required=False,
                 help="Groupe de travailleurs",
                 default="Groupe par défaut",
             ),
@@ -194,13 +230,10 @@ with col1:
                     "TVI",
                 ],
             ),
-            "QUOTITE": st.column_config.NumberColumn(
+            "QUOTITE": st.column_config.SelectboxColumn(
                 required=True,
                 help="temps de travail",
-                format="%.1f",
-                min_value=0.1,
-                max_value=1,
-                step=0.1,
+                options=[1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1],
             ),
             "DATEDEBUT": st.column_config.DateColumn(
                 required=True,
@@ -221,6 +254,10 @@ with col2:
             data_tableau["PRENOM"] = data_tableau["PRENOM"].str.upper()
             data_tableau["CLE"] = data_tableau["CLE"].apply("{:0>2}".format)
             data_tableau["SIRET"] = data_tableau["SIRET"].apply("{:0>14}".format)
+            data_tableau["DATENAISSANCE"] = pd.to_datetime(
+                arg=data_tableau["DATENAISSANCE"]
+            )
+            data_tableau["DATEDEBUT"] = pd.to_datetime(arg=data_tableau["DATEDEBUT"])
 
             with col22:
                 if st.download_button(
