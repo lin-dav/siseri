@@ -291,7 +291,7 @@ with col2:
         if col23.checkbox("Aide ?"):
             container_aide.write("# Aide")
 
-            with container_aide.expander("**Colonnes attendues**", expanded=True):
+            with container_aide.expander("**Colonnes attendues**"):
                 st.table(d)
 
             with container_aide.expander("**Domaines, Secteurs et Métiers**"):
