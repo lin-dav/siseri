@@ -42,3 +42,18 @@ with st.expander("**Domaine, Secteur et Métier**"):
             }
         },
     )
+
+with st.expander("**Type de contrat de travail**"):
+    type_contrat = {
+        "code": ("CDI", "CDD", "CTT", "STG", "CAP", "TFP", "TVI"),
+        "detail": {
+            "CDI": "Contrat à Durée Indéterminée",
+            "CDD": "Contrat à Durée Déterminée",
+            "CTT": "Contrat de Travail Temporaire",
+            "STG": "Stagiaire ou étudiant",
+            "CAP": "Contrat d’apprentissage",
+            "TFP": "Titulaire de la fonction publique",
+            "TVI": "Travailleur indépendant non salarié",
+        },
+    }
+    st.dataframe(type_contrat["detail"])

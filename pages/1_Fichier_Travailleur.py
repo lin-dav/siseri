@@ -56,9 +56,31 @@ d = {
         "-Obligatoire. ",
         "-Obligatoire. ",
         "-Obligatoire. -SIRET de l'établissement, connu dans SISERI",
-        "-Optionnel. -Groupe de travailleurs présent dans l'établissement. Si inconnu, Groupe par défaut.",
+        "-Optionnel. -Groupe de travailleurs présent dans l'établissement. Si inconnu ou non rempli, Groupe par défaut.",
         '-Obligatoire. -Catégorie du travailleur. Peut être vide si "AUTREEXPOSITION" est rempli.',
+        "-Optionnel, sauf si Catégorie est vide.",
+        "-Obligatoire. Civil ou Militaire.",
+        "-Obligatoire. ",
+        "-Obligatoire. ",
+        "-Obligatoire. Externe, Interne ou les deux.",
+        "-Obligatoire. ",
+        "-Obligatoire. ",
+        "-Obligatoire. Temps de travail.",
+        "-Obligatoire. ",
     ],
+}
+
+type_contrat = {
+    "code": ("CDI", "CDD", "CTT", "STG", "CAP", "TFP", "TVI"),
+    "detail": {
+        "CDI": "Contrat à Durée Indéterminée",
+        "CDD": "Contrat à Durée Déterminée",
+        "CTT": "Contrat de Travail Temporaire",
+        "STG": "Stagiaire ou étudiant",
+        "CAP": "Contrat d’apprentissage",
+        "TFP": "Titulaire de la fonction publique",
+        "TVI": "Travailleur indépendant non salarié",
+    },
 }
 
 data_clean = pd.DataFrame(columns=d["Colonne"], index=range(1, 2))
@@ -204,8 +226,8 @@ with col1:
                 required=True,
                 help="Secteur de l'activité.",
                 format="%d",
-                min_value=100000,
-                max_value=699999,
+                min_value=101000,
+                max_value=605000,
                 step=1,
             ),
             "codeNuisanceRadiologique": st.column_config.SelectboxColumn(
@@ -220,15 +242,7 @@ with col1:
             "codeTypeContrat": st.column_config.SelectboxColumn(
                 required=True,
                 help="Type de contrat de travail",
-                options=[
-                    "CDI",
-                    "CDD",
-                    "CTT",
-                    "STG",
-                    "CAP",
-                    "TFP",
-                    "TVI",
-                ],
+                options=type_contrat["code"],
             ),
             "QUOTITE": st.column_config.SelectboxColumn(
                 required=True,
@@ -282,3 +296,6 @@ with col2:
 
             with container_aide.expander("**Domaines, Secteurs et Métiers**"):
                 st.link_button(url="Listes", label="Listes")
+
+            with container_aide.expander("**Type de contrat de travail**"):
+                st.dataframe(type_contrat["detail"])
