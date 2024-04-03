@@ -500,9 +500,11 @@ with col1:
             )  # renommer les colonnes
 
             data_fichier["DATENAISSANCE"] = pd.to_datetime(
-                arg=data_fichier["DATENAISSANCE"]
+                arg=data_fichier["DATENAISSANCE"], format="%d/%m/%Y"
             )
-            data_fichier["DATEDEBUT"] = pd.to_datetime(arg=data_fichier["DATEDEBUT"])
+            data_fichier["DATEDEBUT"] = pd.to_datetime(
+                arg=data_fichier["DATEDEBUT"], format="%d/%m/%Y"
+            )
             data_fichier["GROUPE"] = data_fichier["GROUPE"].astype("string", copy=False)
 
             for colonne in [
