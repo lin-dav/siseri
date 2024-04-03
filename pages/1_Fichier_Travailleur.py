@@ -79,7 +79,7 @@ def verification(df: pd.DataFrame):
                             ],
                             ignore_index=True,
                         )
-                    if df.loc[i, "NIR"][3:5] != str(df.loc[i, colonne].month):
+                    if df.loc[i, "NIR"][3:5] != f"{df.loc[i, colonne].month:02d}":
                         df_verification = pd.concat(
                             [
                                 df_verification,
