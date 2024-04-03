@@ -8,11 +8,12 @@ import numpy as np
 
 def verification(df: pd.DataFrame):
     df_verification = pd.DataFrame(
-        columns=("Numero_Ligne", "Nom_Colonne", "Valeur", "Erreur"), dtype="string"
+        columns=("Numero_Ligne", "Nom", "Nom_Colonne", "Valeur", "Erreur"),
+        dtype="string",
     )
 
     with col1.expander("**Vérif.**", expanded=True):
-        for i in range(df.shape[0]):
+        for i in range(1, df.shape[0] + 1):
             for colonne in donnees_colonnes["Colonne"]:
                 if (
                     colonne == "NIR"
@@ -22,14 +23,14 @@ def verification(df: pd.DataFrame):
                     )
                     is None
                 ):
-
                     df_verification = pd.concat(
                         [
                             df_verification,
                             pd.DataFrame(
                                 [
                                     {
-                                        "Numero_Ligne": i + 1,
+                                        "Numero_Ligne": i,
+                                        "Nom": df.loc[i, "NOM"],
                                         "Nom_Colonne": colonne,
                                         "Valeur": df.loc[i, colonne],
                                         "Erreur": "Numéro de sécurité sociale n'est pas au bon format",
@@ -50,7 +51,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": f"La clé de contrôle ne semble pas correcte. Valeur suggérée : {cle}",
@@ -69,7 +71,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "L'année de naissance ne correspond pas avec le NIR.",
@@ -86,7 +89,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le mois de naissance ne correspond pas avec le NIR.",
@@ -109,7 +113,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le sexe ne correspond pas avec le NIR.",
@@ -128,7 +133,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Numéro de SIRET n'est pas au bon format.",
@@ -149,7 +155,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Classement et Autres Expositions ne peuvent pas être vides en même temps.",
@@ -159,17 +166,39 @@ def verification(df: pd.DataFrame):
                             ],
                             ignore_index=True,
                         )
-                    elif df.loc[i, colonne] not in ["A", "B"]:
+                    elif not pd.isna(df.loc[i, colonne]):
+                        if df.loc[i, colonne] not in ["A", "B"]:
+                            df_verification = pd.concat(
+                                [
+                                    df_verification,
+                                    pd.DataFrame(
+                                        [
+                                            {
+                                                "Numero_Ligne": i,
+                                                "Nom": df.loc[i, "NOM"],
+                                                "Nom_Colonne": colonne,
+                                                "Valeur": df.loc[i, colonne],
+                                                "Erreur": "Le classement n'est ni A, ni B.",
+                                            }
+                                        ]
+                                    ),
+                                ],
+                                ignore_index=True,
+                            )
+
+                elif colonne == "AUTREEXPOSITION":
+                    if pd.isna(df.loc[i, colonne]) and pd.isna(df.loc[i, "CLASSEMENT"]):
                         df_verification = pd.concat(
                             [
                                 df_verification,
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
-                                            "Erreur": "Le classement n'est ni A, ni B.",
+                                            "Erreur": "Classement et Autres Expositions ne peuvent pas être vides en même temps.",
                                         }
                                     ]
                                 ),
@@ -177,7 +206,6 @@ def verification(df: pd.DataFrame):
                             ignore_index=True,
                         )
 
-                elif colonne == "AUTREEXPOSITION":
                     if not pd.isna(df.loc[i, colonne]):
                         if df.loc[i, colonne] not in [
                             "RADON",
@@ -191,7 +219,8 @@ def verification(df: pd.DataFrame):
                                     pd.DataFrame(
                                         [
                                             {
-                                                "Numero_Ligne": i + 1,
+                                                "Numero_Ligne": i,
+                                                "Nom": df.loc[i, "NOM"],
                                                 "Nom_Colonne": colonne,
                                                 "Valeur": df.loc[i, colonne],
                                                 "Erreur": "L'autre exposition saisie n'est pas valide.",
@@ -210,7 +239,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le caractère de l'activité saisie n'est pas valide.",
@@ -232,7 +262,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code domaine de l'activité saisie n'est pas valide.",
@@ -254,7 +285,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code secteur de l'activité saisie n'est pas valide.",
@@ -275,7 +307,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code secteur de l'activité saisie n'est pas cohérent avec le domaine.",
@@ -294,7 +327,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code Nuisance Radiologique saisie n'est pas valide.",
@@ -313,7 +347,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code Type de Contrat saisie n'est pas valide.",
@@ -335,7 +370,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code Metier saisie n'est pas valide.",
@@ -364,7 +400,8 @@ def verification(df: pd.DataFrame):
                                 pd.DataFrame(
                                     [
                                         {
-                                            "Numero_Ligne": i + 1,
+                                            "Numero_Ligne": i,
+                                            "Nom": df.loc[i, "NOM"],
                                             "Nom_Colonne": colonne,
                                             "Valeur": df.loc[i, colonne],
                                             "Erreur": "Le code Metier saisie n'est pas cohérent avec le secteur et le domaine.",
@@ -498,6 +535,8 @@ with col1:
             data_fichier = data_fichier.set_axis(
                 donnees_colonnes["Colonne"], axis=1
             )  # renommer les colonnes
+            data_fichier.index = data_fichier.index + 1  # change l'index
+            data_fichier.index.name = "id"  # nomme l'index
 
             data_fichier["DATENAISSANCE"] = pd.to_datetime(
                 arg=data_fichier["DATENAISSANCE"], format="%d/%m/%Y"
@@ -551,11 +590,12 @@ with col1:
         data_tableau = st.data_editor(
             data_fichier,
             use_container_width=True,
-            hide_index=True,
+            hide_index=False,
             num_rows="dynamic",
             height=min(300 + len(data_fichier) * 60, 999),
             width=999,
             column_config={
+                "id": st.column_config.NumberColumn(disabled=True),
                 "NIR": st.column_config.TextColumn(
                     required=True,
                     help="Numéro de sécurité sociale",
