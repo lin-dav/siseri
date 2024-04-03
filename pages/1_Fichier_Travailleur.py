@@ -376,7 +376,12 @@ def verification(df: pd.DataFrame):
                         )
 
         st.write("**Veuillez modifier les erreurs dans le premier tableau.**")
-        st.dataframe(df_verification, use_container_width=True, hide_index=True)
+        st.dataframe(
+            df_verification,
+            use_container_width=True,
+            hide_index=True,
+            height=min(300 + len(data_fichier) * 60, 500),
+        )
 
 
 st.set_page_config(layout="wide")
