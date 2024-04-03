@@ -498,13 +498,13 @@ with col1:
                 arg=data_fichier["DATENAISSANCE"]
             )
             data_fichier["DATEDEBUT"] = pd.to_datetime(arg=data_fichier["DATEDEBUT"])
+            data_fichier["GROUPE"] = data_fichier["GROUPE"].astype("string", copy=False)
 
             for colonne in [
                 "NIR",
                 "NOM",
                 "PRENOM",
                 "SEXE",
-                "GROUPE",
                 "CLASSEMENT",
                 "AUTREEXPOSITION",
                 "caractereActivite",
@@ -512,26 +512,18 @@ with col1:
                 "codeTypeContrat",
                 "CodeMetier",
             ]:
-                data_fichier[colonne] = data_fichier[colonne].astype(
-                    "string", copy=False
-                )
+                try:
+                    data_fichier[colonne] = data_fichier[colonne].apply(unidecode)
+                except:
+                    pass
+                finally:
+                    data_fichier[colonne] = (
+                        data_fichier[colonne].astype("string", copy=False).str.upper()
+                    )
 
-            for colonne in [
-                "NOM",
-                "PRENOM",
-                "SEXE",
-                "CLASSEMENT",
-                "AUTREEXPOSITION",
-                "codeNuisanceRadiologique",
-                "codeTypeContrat",
-                "CodeMetier",
-            ]:
-                data_fichier[colonne] = (
-                    data_fichier[colonne].apply(unidecode).str.upper()
-                )
-            data_fichier["caractereActivite"] = (
-                data_fichier["caractereActivite"].apply(unidecode).str.capitalize()
-            )
+            data_fichier["caractereActivite"] = data_fichier[
+                "caractereActivite"
+            ].str.capitalize()
 
             for colonne in [
                 "CLE",
