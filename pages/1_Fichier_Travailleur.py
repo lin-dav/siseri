@@ -502,7 +502,7 @@ type_contrat = {
     },
 }
 
-data_clean = pd.DataFrame(columns=donnees_colonnes["Colonne"], index=range(1, 2))
+data_clean = pd.DataFrame(columns=donnees_colonnes["Colonne"], index=range(1, 1))
 df_liste_domaine_secteur_metier = pd.read_csv(
     "pages/liste_domaine_secteur_metier.csv", sep=";"
 )
@@ -747,7 +747,7 @@ with col2:
         )
 
         with container_aide.expander("**Colonnes attendues**"):
-            st.table(donnees_colonnes)
+            st.dataframe(donnees_colonnes, use_container_width=True, height=700)
 
         with container_aide.expander("**Domaines, Secteurs et Métiers**"):
             st.write(
@@ -759,4 +759,4 @@ with col2:
             st.write("RADON")
 
         with container_aide.expander("**Type de contrat de travail**"):
-            st.dataframe(type_contrat["detail"])
+            st.dataframe(type_contrat["detail"], use_container_width=True)
