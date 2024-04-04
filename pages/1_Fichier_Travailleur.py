@@ -736,9 +736,14 @@ with col2:
 
     if col23.checkbox("Aide ?", value=True):
         container_aide.write("# Aide")
-        container_aide.link_button(
+        col_aide_1, col_aide_2 = container_aide.columns(2)
+        col_aide_1.link_button(
             "**Fichier .CSV au format attendu**",
             url="https://docs.siseri.irsn.fr/sites/docssiseri/files/2023-11/Import-travailleur_modele.csv",
+        )
+        col_aide_2.link_button(
+            "**Aide sur le site d'aide SISERI**",
+            url="https://docs.siseri.irsn.fr/transmissions-de-donnees/format-et-contenu-des-fichiers/import-dune-liste-de-travailleurs",
         )
 
         with container_aide.expander("**Colonnes attendues**"):
