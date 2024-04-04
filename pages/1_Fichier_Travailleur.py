@@ -756,7 +756,15 @@ with col2:
             st.link_button(url="Listes", label="Listes")
 
         with container_aide.expander("**Autres Expositions**"):
-            st.write("RADON")
+            st.dataframe(
+                {
+                    "RADON": "Travailleur intervenant dans des lieux à niveau de radon élevé, principalement en milieu souterrain.",
+                    "RAY_COS": "Rayonnement cosmique : Personnel travaillant dans des aéronefs exposé à un rayonnement cosmique.",
+                    "SUR_GRP_1": "S.U.R. Groupe 1 : Travailleur intervenant dans le cadre d'une situation d'urgence radiologique devant être informé et préparé préalablement et pouvant être exposé à plus de 20 mSv et jusqu'à 1 Sv pendant la crise.",
+                    "SUR_GRP_2": "S.U.R. Groupe 2 : Travailleur intervenant dans le cadre d'une situation d'urgence radiologique devant être informé et préparé préalablement et pouvant être exposé à plus de 1 mSv et jusqu'à 20 mSv pendant la crise.​",
+                },
+                use_container_width=True,
+            )
 
         with container_aide.expander("**Type de contrat de travail**"):
             st.dataframe(type_contrat["detail"], use_container_width=True)
