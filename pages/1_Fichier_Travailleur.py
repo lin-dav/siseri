@@ -413,6 +413,9 @@ def verification(df: pd.DataFrame):
                         )
 
         st.write("**Veuillez modifier les erreurs dans le premier tableau.**")
+        st.write(
+            "D'autres erreurs ne sont détectables que dans SISERI, lors de l'importation."
+        )
         st.dataframe(
             df_verification,
             use_container_width=True,
