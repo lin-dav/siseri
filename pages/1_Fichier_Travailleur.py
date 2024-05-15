@@ -514,7 +514,7 @@ col1, col2 = st.columns([0.7, 0.3], gap="small")
 
 with col1:
     uploaded_file = st.file_uploader(
-        "**Importer un fichier .CSV au format attendu par SISERI**",
+        "**Importer un fichier .CSV au format attendu par SISERI** (sinon remplir le Tableau ci-dessous)",
         type=["csv"],
         accept_multiple_files=False,
     )
@@ -589,7 +589,7 @@ with col1:
             data_fichier["CLE"] = data_fichier["CLE"].apply("{:0>2}".format)
             data_fichier["SIRET"] = data_fichier["SIRET"].apply("{:0>14}".format)
 
-    with st.expander("**Tableau**"):
+    with st.expander("**Tableau**", expanded=True):
         data_tableau = st.data_editor(
             data_fichier,
             use_container_width=True,
